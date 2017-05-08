@@ -11,6 +11,10 @@ class Piece
     @value = 0
   end
 
+  def inspect
+    to_s
+  end
+
   def valid_move?(next_pos)
     return false unless board.in_bounds?(next_pos)
     if board[next_pos].is_a?(NullPiece) || enemy_at?(next_pos)

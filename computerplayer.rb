@@ -48,11 +48,10 @@ class ComputerPlayer
   def get_best_move
     max_score = -Float::INFINITY
     optimal_move = nil
-
     generate_moves(display.board, :black).each do |move|
       score = negamax(
       display.board,
-      1,
+      2,
       -Float::INFINITY,
       Float::INFINITY,
       false
@@ -62,6 +61,7 @@ class ComputerPlayer
         max_score = score
       end
     end
+
     optimal_move
   end
 
@@ -74,7 +74,7 @@ class ComputerPlayer
       generate_moves(board, :white).each do |move|
         next_board = board.dup
         next_board.move_piece(move.first, move.last)
-        max = [max, negamax(next_board, depth - 1, alpha, beta, FALSE)].max
+        max = [max, negamax(next_board, depth - 1, alpha, beta, false)].max
         alpha = [alpha, max].max
         if beta <= alpha
           break
@@ -86,7 +86,7 @@ class ComputerPlayer
       generate_moves(board, :black).each do |move|
         next_board = board.dup
         next_board.move_piece(move.first, move.last)
-        max = [max, negamax(next_board, depth - 1, alpha, beta, TRUE)].min
+        max = [max, negamax(next_board, depth - 1, alpha, beta, true)].min
         beta = [beta, max].min
         if beta <= alpha
           break
