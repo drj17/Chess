@@ -10,8 +10,6 @@ require_relative 'pieces/rook'
 require_relative 'pieces/pawn'
 require_relative 'pieces/king'
 
-require 'byebug'
-
 class InvalidMove < StandardError
 end
 

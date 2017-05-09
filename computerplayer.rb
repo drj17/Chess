@@ -4,35 +4,39 @@ require 'byebug'
 class ComputerPlayer
 
   attr_reader :name, :display, :cursor, :color
-  attr_accessor :first_turn
+  attr_accessor :first_turn, :potential_moves
 
   def initialize(name, display, color)
     @color = color
     @name = name
     @display = display
     @first_turn = true
+    @potential_moves = []
   end
 
-  def generate_moves(board, next_color)
-    pieces = board.get_pieces(next_color)
-    potential_moves = []
+  def generate_moves(board)
+    pieces = board.get_pieces(:black)
 
     pieces.each do |piece|
       start_pos = piece.pos
       piece.valid_moves.each do |move|
-        potential_moves << [start_pos, move]
+        @potential_moves << [start_pos, move]
       end
     end
-    potential_moves
   end
 
   def play_turn
     if @first_turn
       @first_turn = false
       return [[1, 4], [2, 4]]
+    else
+      generate_moves(display.board)
     end
-
-    get_best_move
+    if !capture_pieces(@potential_moves).empty?
+      return capture_pieces(@potential_moves).sample
+    else
+      return @potential_moves.sample
+    end
   end
 
   def capture_pieces(potential_moves)
@@ -42,13 +46,16 @@ class ComputerPlayer
         capture_moves << move
       end
     end
-    capture_moves.sort { |a, b| display.board[b[1]].value <=> display.board[a[1]].value }
+    capture_moves.sort do |a, b|
+      display.board[b[1]].value <=> display.board[a[1]].value
+    end
   end
 
   def get_best_move
     max_score = -Float::INFINITY
     optimal_move = nil
     generate_moves(display.board, :black).each do |move|
+      p move
       score = negamax(
       display.board,
       2,
@@ -110,6 +117,8 @@ class ComputerPlayer
     board.get_pieces(:black).each do |piece|
       black_score += piece.value
     end
+    p black_score
+    p white_score
     black_score - white_score
   end
 end
