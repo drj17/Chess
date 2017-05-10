@@ -24,6 +24,8 @@ def generate_moves
 end
 ```
 
+Terminal chess also leverages duck typing to allow the human player and computer player classes to be swapped out seamlessly.  Both classes have a play_turn method that will handle the game logic that the game class can handle each players turns without any extra conditional logic.
+
 Each Piece also has a method to check for valid moves that will reject any moves that would leave the player in check:
 
 ```
@@ -63,6 +65,8 @@ def capture_pieces(potential_moves)
 end
 
 ```
+
+
 ## Screenshots
 
 An example of Terminal Chess utilizing check-mate logic:
