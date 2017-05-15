@@ -1,4 +1,3 @@
-# Dir["/pieces/*.rb"].each { |file| require_relative file }
 require_relative 'pieces/piece'
 require_relative 'pieces/sliding_piece'
 require_relative 'pieces/stepping_piece'
@@ -9,6 +8,17 @@ require_relative 'pieces/queen'
 require_relative 'pieces/rook'
 require_relative 'pieces/pawn'
 require_relative 'pieces/king'
+
+PIECES = [
+  Rook,
+  Knight,
+  Bishop,
+  Queen,
+  King,
+  Bishop,
+  Knight,
+  Rook
+]
 
 class InvalidMove < StandardError
 end
@@ -110,6 +120,19 @@ class Board
 
   private
 
+  def place_capital_pieces
+    #Place all black pieces, using the index as their position on the board
+    PIECES.each_with_index do |piece, i|
+      pos = [0, i]
+      self[pos] = piece.new(pos, self, :black)
+    end
+    #Place all white pieces, using the index as their position on the board
+    PIECES.each_with_index do |piece, i|
+      pos = [7, i]
+      self[pos] = piece.new(pos, self, :white)
+    end
+  end
+
   def place_pawns
     (0..7).each do |j|
       pos = [1, j]
@@ -128,45 +151,5 @@ class Board
         self[pos] = NullPiece.instance
       end
     end
-  end
-
-  def place_capital_pieces
-    place_rooks
-    place_knights
-    place_bishops
-    place_queens
-    place_kings
-  end
-
-  def place_rooks
-    [0, 7].each do |i|
-      self[[0, i]] = Rook.new([0, i], self, :black)
-      self[[7, i]] = Rook.new([7, i], self, :white)
-    end
-  end
-
-  def place_knights
-    [1, 6].each do |i|
-      self[[0, i]] = Knight.new([0, i], self, :black)
-      self[[7, i]] = Knight.new([7, i], self, :white)
-    end
-  end
-
-
-  def place_bishops
-    [2, 5].each do |i|
-      self[[0, i]] = Bishop.new([0, i], self, :black)
-      self[[7, i]] = Bishop.new([7, i], self, :white)
-    end
-  end
-
-  def place_queens
-    self[[0, 3]] = Queen.new([0, 3], self, :black)
-    self[[7, 3]] = Queen.new([7, 3], self, :white)
-  end
-
-  def place_kings
-    self[[0, 4]] = King.new([0, 4], self, :black)
-    self[[7, 4]] = King.new([7, 4], self, :white)
   end
 end
